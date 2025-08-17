@@ -1,48 +1,40 @@
-from bottle import post, get, route, request, HTTPResponse, response
-import uuid
-import logging
+from fastapi import FastAPI, HTTPException
 
-from sensors import temperature
-from sensors import soil_moisture
+from sensors import temperature, soil_moisture
 
-@get("/temperature")
+app = FastAPI()
+
+@app.get("/temperature")
 def get_temperature():
 
     try:
+        data = temperature.get_temperature()
 
-        data = temperature.getTemperature()
-
-        body = {
+        return {
             "temperature": data.temperature_c,
             "humidity": data.humidity
         }
 
-        response.set_header('Content-Type', 'application/json')
-        return body
-
     except: 
 
-        abort(500, 'Nooooo!!!')
-    # return HTTPResponse(status = 200, body = body)
+        raise HTTPException(status_code = 500, detail = "Unable to retrieve temperature / humidity data")
 
-@get("/moisture")
+@app.get("/moisture")
 def get_moisture():
 
-    data = soil_moisture.readMoisturePercentageLevel()
+    try:
 
-    body = {
-        "moisture": data
-    }
+        data = soil_moisture.readMoisturePercentageLevel()
 
-    # return HTTPResponse(status = 200, body = body)
-    response.set_header('Content-Type', 'application/json')
-    return body
+        return {
+            "moisture_percentage": data
+        }
+    except:
+        raise HTTPException(status_code = 500, detail = "Unable to retrieve soild moisture data")
 
-
-@get("/ping")
+@app.get("/ping")
 def ping():
 
-    response.set_header('Content-Type', 'application/json')
     return {
         "pong": True
     }

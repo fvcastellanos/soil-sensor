@@ -1,8 +1,7 @@
 import soil_moisture
 import temperature
 
-from .domain import TemperatureData
-from .domain import SensorData
+from domain import TemperatureData, SensorData
 
 def readSensors():
 
