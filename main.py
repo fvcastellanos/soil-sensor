@@ -1,20 +1,23 @@
-
-import sys
-import logging4
-
-# from bottle import run
-
 from sensors import temperature, soil_moisture
-from api import routes
+import logging
 
-logger = logging4.Logger(name = "AppLogger")
-formatter = '[[time]] - [[name]] - [[level_name]] - [[msg]]'
+logging.basicConfig(
+    level=logging.INFO,  # Set the log level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
-logger.add_channel(filename=sys.stdout, level=logging4.INFO, formatter=formatter)
+logger = logging.getLogger(__name__)
 
-# def main():
+def main():
 
-#     run(host='0.0.0.0', port=9080)
+    logger.info("Reading sensors")
 
-# if __name__ == "__main__":
-#     main()
+    t_data = temperature.get_temperature()
+    t_moisture = soil_moisture.readMoisturePercentageLevel()
+
+    logger.info(f"Temp: {t_data.temperature_c}C / {t_data.temperature_f}F, Humidity: {t_data.humidity}%")
+    logger.info(f"Soil Moisture: {t_moisture}%")
+
+
+if __name__ == "__main__":
+    main()

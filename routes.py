@@ -2,6 +2,13 @@ from fastapi import FastAPI, HTTPException
 
 from sensors import temperature, soil_moisture
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the log level
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
 app = FastAPI()
 
 @app.get("/temperature")
@@ -16,7 +23,6 @@ def get_temperature():
         }
 
     except: 
-
         raise HTTPException(status_code = 500, detail = "Unable to retrieve temperature / humidity data")
 
 @app.get("/moisture")

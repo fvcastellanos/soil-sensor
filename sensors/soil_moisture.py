@@ -1,5 +1,8 @@
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_MCP3008
+import logging
+
+logger = logging.getLogger("moisture.module")
 
 # Hardware SPI configuration:
 SPI_PORT   = 0
@@ -15,6 +18,9 @@ def readMoistureRawLevel():
     return mcp.read_adc(CHANNEL)
 
 def readMoisturePercentageLevel():
+
+    logger.info("Reading soil moisture value")
+
     percentage = (readMoistureRawLevel() / MAX_VALUE) * 100
 
     return round(percentage, 2)
